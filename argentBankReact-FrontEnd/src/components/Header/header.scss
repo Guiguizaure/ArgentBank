@@ -1,0 +1,13 @@
+.main-nav{
+    background: pink;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .main-nav-logo{
+        img{
+            width: 200px;
+            max-width: 100%;
+        }
+    }
+}
