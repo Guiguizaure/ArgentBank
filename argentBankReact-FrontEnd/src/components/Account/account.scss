@@ -1,0 +1,69 @@
+.account{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
+    background-color: #fff;
+    width: 80%;
+    margin: 0 auto;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    text-align: left;
+    margin-bottom: 2rem;
+
+    @media(min-width: 720px){
+        flex-direction: row;
+    }
+
+    .account-content-wrapper{
+        width: 100%;
+        flex: 1;
+
+        h3.account-title{
+            font-size: 1rem;
+        }
+        p.account-amount{
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 60px;
+        }
+
+        &.cta{
+            width: 100%;
+            flex: 1;
+
+            @media(min-width: 720px){
+                flex: 0;
+            }
+            .transaction-button{
+                display: block;
+                width: 100%;
+                padding: 8px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                margin-top: 1rem;
+                border-color: #00bc77;
+                background-color: #00bc77;
+                color: #fff;
+                cursor: pointer;
+                transition-duration: 0.4s; /* Smooth transition for hover effect */
+                box-shadow: 2px 2px #999; /* Shadow on the right and bottom */
+                user-select: none; /* Prevents text selection */
+                
+                // &:hover {
+                //     background-color: #5cbf2a; /* Lighter green on hover */
+                //   }
+                  
+                &:active {
+                box-shadow: inset 1px 1px 2px #bbb, inset -1px -1px 2px #fff; /* Inset shadow for pressed effect */
+                transform: translate(1px, 1px); /* Slightly shift the button to simulate being pressed */
+                }
+
+                @media(min-width: 720px){
+                    width: 200px;
+                }
+            }
+        }
+    }
+}

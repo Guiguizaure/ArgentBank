@@ -1,0 +1,24 @@
+.main.user-page{
+    padding: 0;
+    
+    .header{
+        margin: 2rem;
+
+        h1{
+            display: block;
+            margin-bottom: 1.4rem;
+            font-size: 2em;
+            line-height: 46px;
+            font-weight: bold;
+            color: white;
+        }
+        button.edit-button{
+            border-color: #00bc77;
+            background-color: #00bc77;
+            font-size: 14px;
+            color: #fff;
+            font-weight: bold;
+            padding: 10px;
+        }
+    }
+}

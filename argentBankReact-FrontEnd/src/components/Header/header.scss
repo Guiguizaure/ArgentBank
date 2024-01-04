@@ -1,13 +1,23 @@
 .main-nav{
-    background: pink;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 5px 20px;
 
     .main-nav-logo{
         img{
             width: 200px;
             max-width: 100%;
+        }
+    }
+
+    a{
+        font-weight: bold;
+        color: #2c3e50;
+        margin-right: 12px;
+
+        svg{
+            margin-right: 6px;
         }
     }
 }

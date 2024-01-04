@@ -1,8 +1,6 @@
 import React from "react";
-import Header from "../../components/Header/header";
 import Hero from "../../components/Hero/hero";
 import FeatureItem from "../../components/FeatureItem/featureItem";
-import Footer from "../../components/Footer/footer";
 import iconChat from "../../assets/icon-chat.png";
 import iconMoney from "../../assets/icon-money.png";
 import iconSecurity from "../../assets/icon-security.png";
@@ -12,7 +10,6 @@ import "./homepage.scss";
 const HomePage: React.FC = () => {
   return (
     <div>
-      <Header />
       <main>
         <Hero />
         <section className="features">
@@ -33,7 +30,6 @@ const HomePage: React.FC = () => {
           </FeatureItem>
         </section>
       </main>
-      <Footer />
     </div>
   );
 };

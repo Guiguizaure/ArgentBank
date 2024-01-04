@@ -1,0 +1,3 @@
+[submodule "argentBankReact-BackEnd/Project-10-Bank-API"]
+	path = argentBankReact-BackEnd/Project-10-Bank-API
+	url = https://github.com/Guiguizaure/Project-10-Bank-API.git

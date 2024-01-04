@@ -20,6 +20,9 @@ html, body {
 body {
     line-height: 1;
     -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 img, picture, video, canvas, svg {
