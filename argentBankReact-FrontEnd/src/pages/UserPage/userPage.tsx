@@ -1,16 +1,28 @@
 // UserPage.tsx
-import React from "react";
+import { useEffect } from "react";
 import Account from "../../components/Account/account"; // Make sure this path is correct
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile } from "../../features/user/userSlice";
+import { RootState, AppDispatch } from "../../app/store";
 import "./userPage.scss";
 
 const UserPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user.user);
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
+
+  console.log("User info:", user); // Debugging
+
   return (
     <main className="main user-page bg-dark">
       <div className="header">
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {user?.firstName} {user?.lastName}!
         </h1>
         <button className="edit-button">Edit Name</button>
       </div>

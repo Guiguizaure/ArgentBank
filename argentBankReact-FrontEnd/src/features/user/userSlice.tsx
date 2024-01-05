@@ -1,5 +1,3 @@
-// userSlice.ts
-
 import {
   createSlice,
   createAsyncThunk,
@@ -7,13 +5,14 @@ import {
   SerializedError,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { apiService } from "./apiServices";
+import { apiService } from "./apiServices"; // Ensure this service is correctly implemented
 import axios from "axios";
 
 interface User {
   email: string;
   firstName?: string;
   lastName?: string;
+  // Add any other user properties you expect from the API
 }
 
 interface UserState {
@@ -35,18 +34,13 @@ interface LoginCredentials {
   password: string;
 }
 
-interface LoginResponse {
-  user: User;
-  token: string;
-}
-
 export const loginUser = createAsyncThunk(
   "user/login",
   async ({ email, password }: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await apiService.login({ email, password });
       localStorage.setItem("token", response.token);
-      return response;
+      return { user: response.user, token: response.token }; // Assuming the API returns user info
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);
@@ -61,10 +55,19 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const token = (getState() as RootState).user.token;
     if (token) {
-      const response = await apiService.getProfile(token);
-      return response;
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios.get("/api/v1/user/profile", { headers });
+        return response.data; // Assuming this is the format of the response
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          return rejectWithValue(error.response.data);
+        }
+        return rejectWithValue("An error occurred while fetching profile");
+      }
+    } else {
+      return rejectWithValue("No token found");
     }
-    return rejectWithValue("No token found");
   }
 );
 
@@ -86,7 +89,7 @@ const userSlice = createSlice({
       })
       .addCase(
         loginUser.fulfilled,
-        (state, action: PayloadAction<LoginResponse>) => {
+        (state, action: PayloadAction<{ user: User; token: string }>) => {
           state.status = "succeeded";
           state.user = action.payload.user;
           state.token = action.payload.token;
@@ -105,6 +108,7 @@ const userSlice = createSlice({
           state.user = action.payload;
         }
       );
+    // Add handling for fetchUserProfile.pending and fetchUserProfile.rejected if needed
   },
 });
 
