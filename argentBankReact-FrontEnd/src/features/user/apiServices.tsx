@@ -10,6 +10,7 @@ interface LoginCredentials {
 
 const login = async (credentials: LoginCredentials) => {
   const response = await axios.post(API_URL + "login", credentials);
+  console.log("API response for login:", response.data);
   return response.data;
 };
 
@@ -19,8 +20,8 @@ const getProfile = async (token: string) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await axios.get(API_URL + "profile", config);
-  return response.data;
+  const response = await axios.post(API_URL + "profile", {}, config);
+  return response.data.body;
 };
 
 export const apiService = {

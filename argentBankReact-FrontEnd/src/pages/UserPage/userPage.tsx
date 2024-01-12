@@ -1,6 +1,6 @@
 // UserPage.tsx
 import { useEffect } from "react";
-import Account from "../../components/Account/account"; // Make sure this path is correct
+import Account from "../../components/Account/account";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../features/user/userSlice";
 import { RootState, AppDispatch } from "../../app/store";

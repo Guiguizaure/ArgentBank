@@ -39,8 +39,9 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await apiService.login({ email, password });
+      console.log("Login response:", response); // Debugging
       localStorage.setItem("token", response.token);
-      return { user: response.user, token: response.token }; // Assuming the API returns user info
+      return { user: response.user, token: response.body.token };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);
@@ -54,10 +55,11 @@ export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
   async (_, { getState, rejectWithValue }) => {
     const token = (getState() as RootState).user.token;
+    console.log("Token for profile request:", token);
     if (token) {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const response = await axios.get("/api/v1/user/profile", { headers });
+        const response = await axios.post("/api/v1/user/profile", { headers });
         return response.data; // Assuming this is the format of the response
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -102,13 +104,9 @@ const userSlice = createSlice({
           state.error = action.payload.message || "An unknown error occurred";
         }
       )
-      .addCase(
-        fetchUserProfile.fulfilled,
-        (state, action: PayloadAction<User>) => {
-          state.user = action.payload;
-        }
-      );
-    // Add handling for fetchUserProfile.pending and fetchUserProfile.rejected if needed
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+      });
   },
 });
 
