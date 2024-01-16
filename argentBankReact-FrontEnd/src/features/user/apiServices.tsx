@@ -1,30 +1,66 @@
 // src/services/apiService.ts
-import axios from "axios";
-
 const API_URL = "http://localhost:3001/api/v1/user/";
 
 interface LoginCredentials {
   email: string;
   password: string;
 }
+interface ProfileUpdateData {
+  firstName: string;
+  lastName: string;
+}
 
 const login = async (credentials: LoginCredentials) => {
-  const response = await axios.post(API_URL + "login", credentials);
-  console.log("API response for login:", response.data);
-  return response.data;
+  const response = await fetch(API_URL + "login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to login");
+  }
+  const data = await response.json();
+  console.log("API response for login:", data);
+  return data;
 };
 
 const getProfile = async (token: string) => {
-  const config = {
+  const response = await fetch(API_URL + "profile", {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-  };
-  const response = await axios.post(API_URL + "profile", {}, config);
-  return response.data.body;
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch profile");
+  }
+  const data = await response.json();
+  console.log("API response for getProfile:", data);
+  return data.body;
+};
+
+const profileUpdate = async (
+  profileUpdateData: ProfileUpdateData,
+  token: string
+) => {
+  const response = await fetch(API_URL + "profile", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(profileUpdateData),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update profile");
+  }
+  console.log("API response for getProfile:", response.json());
+  return await response.json();
 };
 
 export const apiService = {
   login,
   getProfile,
+  profileUpdate,
 };

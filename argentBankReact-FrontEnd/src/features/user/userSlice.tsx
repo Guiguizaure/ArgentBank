@@ -5,14 +5,12 @@ import {
   SerializedError,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { apiService } from "./apiServices"; // Ensure this service is correctly implemented
-import axios from "axios";
+import { apiService } from "./apiServices";
 
 interface User {
   email: string;
   firstName?: string;
   lastName?: string;
-  // Add any other user properties you expect from the API
 }
 
 interface UserState {
@@ -39,13 +37,10 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await apiService.login({ email, password });
-      console.log("Login response:", response); // Debugging
-      localStorage.setItem("token", response.token);
+      console.log("Login response:", response);
+      localStorage.setItem("token", response.body.token);
       return { user: response.user, token: response.body.token };
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data);
-      }
       return rejectWithValue("An unknown error occurred");
     }
   }
@@ -55,20 +50,36 @@ export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
   async (_, { getState, rejectWithValue }) => {
     const token = (getState() as RootState).user.token;
-    console.log("Token for profile request:", token);
+    console.log("Token for profile REQUEST:", token);
     if (token) {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
-        const response = await axios.post("/api/v1/user/profile", { headers });
-        return response.data; // Assuming this is the format of the response
+        const response = await apiService.getProfile(token);
+        return response;
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          return rejectWithValue(error.response.data);
-        }
         return rejectWithValue("An error occurred while fetching profile");
       }
     } else {
       return rejectWithValue("No token found");
+    }
+  }
+);
+
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (userData: { firstName: string; lastName: string }, thunkAPI) => {
+    const token = (thunkAPI.getState() as RootState).user.token;
+    if (token) {
+      try {
+        const data = await apiService.profileUpdate(userData, token);
+        thunkAPI.dispatch(fetchUserProfile()); // Use thunkAPI to dispatch
+        return data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(
+          "An error occurred while updating profile"
+        );
+      }
+    } else {
+      return thunkAPI.rejectWithValue("No token found");
     }
   }
 );
@@ -105,6 +116,10 @@ const userSlice = createSlice({
         }
       )
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        console.log("Profile updated:", action.payload);
         state.user = action.payload;
       });
   },

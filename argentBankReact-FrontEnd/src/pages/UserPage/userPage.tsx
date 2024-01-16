@@ -1,6 +1,7 @@
 // UserPage.tsx
 import { useEffect } from "react";
 import Account from "../../components/Account/account";
+import UserHeader from "../../components/userHeader/userHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../features/user/userSlice";
 import { RootState, AppDispatch } from "../../app/store";
@@ -9,23 +10,23 @@ import "./userPage.scss";
 const UserPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
+  const updateStatus = useSelector((state: RootState) => state.user.status);
 
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (updateStatus === "succeeded") {
+      dispatch(fetchUserProfile());
+    }
+  }, [updateStatus, dispatch]);
+
   console.log("User info:", user); // Debugging
 
   return (
     <main className="main user-page bg-dark">
-      <div className="header">
-        <h1>
-          Welcome back
-          <br />
-          {user?.firstName} {user?.lastName}!
-        </h1>
-        <button className="edit-button">Edit Name</button>
-      </div>
+      <UserHeader firstName={user?.firstName} lastName={user?.lastName} />
       <h2 className="sr-only">Accounts</h2>
       {/* Repeating account sections for each account */}
       <Account
