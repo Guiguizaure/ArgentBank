@@ -1,7 +1,7 @@
 import "./userHeader.scss";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "../../features/user/userSlice"; // Import the action
+import { updateProfile } from "../../features/user/userSlice";
 import { AppDispatch } from "../../app/store";
 
 interface UserHeaderProps {
@@ -25,27 +25,37 @@ const UserHeader: React.FC<UserHeaderProps> = ({
 
   const handleSave = () => {
     const updatedUserInfo = { firstName: newFirstName, lastName: newLastName };
-    dispatch(updateProfile(updatedUserInfo));
+    dispatch(updateProfile(updatedUserInfo)); // Corrected dispatch
     setIsEditMode(false);
   };
+
+  console.log("UserHeader Props:", { firstName, lastName });
 
   if (isEditMode) {
     return (
       <div className="user-header-modif">
-        <input
-          value={newFirstName}
-          onChange={(e) => setNewFirstName(e.target.value)}
-        />
-        <input
-          value={newLastName}
-          onChange={(e) => setNewLastName(e.target.value)}
-        />
-        <button className="save-button" onClick={handleSave}>
-          Save
-        </button>
-        <button className="cancel-button" onClick={() => setIsEditMode(false)}>
-          Cancel
-        </button>
+        <h1>Welcome back</h1>
+        <div className="input-wrapper">
+          <input
+            value={newFirstName}
+            onChange={(e) => setNewFirstName(e.target.value)}
+          />
+          <input
+            value={newLastName}
+            onChange={(e) => setNewLastName(e.target.value)}
+          />
+        </div>
+        <div className="button-wrapper">
+          <button className="save-button" onClick={handleSave}>
+            Save
+          </button>
+          <button
+            className="cancel-button"
+            onClick={() => setIsEditMode(false)}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     );
   }

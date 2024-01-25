@@ -13,11 +13,8 @@ const UserPage: React.FC = () => {
   const updateStatus = useSelector((state: RootState) => state.user.status);
 
   useEffect(() => {
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (updateStatus === "succeeded") {
+      console.log("Fetching updated user profile..."); // Debugging
       dispatch(fetchUserProfile());
     }
   }, [updateStatus, dispatch]);

@@ -52,11 +52,14 @@ const profileUpdate = async (
     },
     body: JSON.stringify(profileUpdateData),
   });
+
   if (!response.ok) {
     throw new Error("Failed to update profile");
   }
-  console.log("API response for getProfile:", response.json());
-  return await response.json();
+
+  const data = await response.json();
+  console.log("API response for profileUpdate:", data);
+  return data;
 };
 
 export const apiService = {

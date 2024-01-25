@@ -1,3 +1,4 @@
+// userSlice.tsx
 import {
   createSlice,
   createAsyncThunk,
@@ -6,6 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { apiService } from "./apiServices";
+import { setToken, removeToken } from "../../utility/token";
 
 interface User {
   email: string;
@@ -39,6 +41,9 @@ export const loginUser = createAsyncThunk(
       const response = await apiService.login({ email, password });
       console.log("Login response:", response);
       localStorage.setItem("token", response.body.token);
+      if (response.body.token) {
+        setToken(response.body.token);
+      }
       return { user: response.user, token: response.body.token };
     } catch (error) {
       return rejectWithValue("An unknown error occurred");
@@ -68,18 +73,20 @@ export const updateProfile = createAsyncThunk(
   "user/updateProfile",
   async (userData: { firstName: string; lastName: string }, thunkAPI) => {
     const token = (thunkAPI.getState() as RootState).user.token;
-    if (token) {
-      try {
-        const data = await apiService.profileUpdate(userData, token);
-        thunkAPI.dispatch(fetchUserProfile()); // Use thunkAPI to dispatch
-        return data;
-      } catch (error) {
-        return thunkAPI.rejectWithValue(
-          "An error occurred while updating profile"
-        );
-      }
-    } else {
+    if (!token) {
       return thunkAPI.rejectWithValue("No token found");
+    }
+
+    try {
+      const updatedUserData = await apiService.profileUpdate(userData, token);
+      console.log("Profile update response:", updatedUserData); // Debugging
+      thunkAPI.dispatch(fetchUserProfile());
+      return updatedUserData;
+    } catch (error) {
+      console.error("Update profile error:", error); // Debugging
+      return thunkAPI.rejectWithValue(
+        "An error occurred while updating profile"
+      );
     }
   }
 );
@@ -93,6 +100,10 @@ const userSlice = createSlice({
       state.token = null;
       state.status = "idle";
       state.error = null;
+      removeToken();
+    },
+    setTokenInState: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -125,5 +136,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { signOut } = userSlice.actions;
+export const { signOut, setTokenInState } = userSlice.actions;
 export default userSlice.reducer;
