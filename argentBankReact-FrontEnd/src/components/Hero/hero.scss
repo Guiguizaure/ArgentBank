@@ -8,6 +8,10 @@
         height: 400px;
         background-position: 0% 33%;
     }
+    @media(max-width: 920px){
+        min-height: 330px;
+        background-position: 0% 53%;
+    }
     // background-color: aqua;
 
     .hero-content{
@@ -25,6 +29,12 @@
             right: 50px;
             width: 364px;
             margin: 2rem;
+        }
+        @media(max-width: 920px){
+            top: 76px;
+            width: 100%;
+            max-width: 288px;
+            // margin: 2rem;
         }
     
         .subtitle{

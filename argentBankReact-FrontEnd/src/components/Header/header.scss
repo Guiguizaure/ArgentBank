@@ -4,10 +4,18 @@
     align-items: center;
     padding: 5px 20px;
 
+    .nav{
+        display: flex;
+    }
+
     .main-nav-logo{
         img{
             width: 200px;
             max-width: 100%;
+
+            @media screen and (max-width: 500px){
+                width: 120px;
+            }
         }
     }
 
@@ -19,5 +27,13 @@
         svg{
             margin-right: 6px;
         }
+    }
+
+    span{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-right: 12px;
+        font-weight: 700;
     }
 }

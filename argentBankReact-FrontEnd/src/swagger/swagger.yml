@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   title: Bank Argent Transactions API
-  description: API endpoints for managing bank transactions
+  description: API endpoints for managing bank transactions, focusing on security and detailed transaction information.
   version: "1.0.0"
   termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
@@ -10,13 +10,24 @@ schemes:
   - http
 paths:
   /transactions/monthly:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
         - Transactions Module
       summary: View Monthly Transactions
-      description: API for viewing all transactions for the current month, grouped by account
+      description: API for securely viewing all transactions for the current month, grouped by account. Uses a POST method for enhanced security.
+      parameters:
+        - in: body
+          name: body
+          description: Request parameters for viewing monthly transactions
+          required: true
+          schema:
+            type: object
+            properties:
+              accountId:
+                type: string
+                description: Unique ID of the account to filter transactions
       produces:
         - application/json
       responses:
@@ -31,19 +42,29 @@ paths:
         "500":
           description: Internal Server Error
   /transaction/{transactionId}:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
         - Transactions Module
       summary: View Transaction Details
-      description: API for viewing the details of a specific transaction
+      description: API for securely viewing the details of a specific transaction using a POST method.
       parameters:
         - in: path
           name: transactionId
           required: true
           type: string
           description: Unique ID of the transaction
+        - in: body
+          name: body
+          description: Request parameters for viewing a transaction detail
+          required: true
+          schema:
+            type: object
+            properties:
+              detailLevel:
+                type: string
+                description: Level of detail requested for the transaction
       produces:
         - application/json
       responses:
@@ -59,94 +80,6 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Modify Transaction
-      description: API for modifying a transaction
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: "#/definitions/TransactionUpdate"
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Transaction updated successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
-          description: Invalid Fields or Transaction ID
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
-    delete:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Delete Transaction
-      description: API for deleting a transaction
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Transaction deleted successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
-          description: Invalid Transaction ID
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
-  /transaction:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Add Transaction
-      description: API for adding a new transaction
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: "#/definitions/TransactionCreate"
-      produces:
-        - application/json
-      responses:
-        "201":
-          description: Transaction created successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
-          description: Invalid Fields
-        "401":
-          description: Unauthorized Access
-        "500":
-          description: Internal Server Error
   /transaction/{transactionId}/category:
     put:
       security:
@@ -154,7 +87,7 @@ paths:
       tags:
         - Transactions Module
       summary: Update Transaction Category
-      description: API for updating the category of a transaction
+      description: API for updating the category of a transaction.
       parameters:
         - in: path
           name: transactionId
@@ -188,7 +121,7 @@ paths:
       tags:
         - Transactions Module
       summary: Update Transaction Note
-      description: API for adding or updating a note to a transaction
+      description: API for adding or updating a note to a transaction.
       parameters:
         - in: path
           name: transactionId
@@ -221,36 +154,6 @@ securityDefinitions:
     name: Authorization
     in: header
 definitions:
-  TransactionCreate:
-    type: object
-    required:
-      - accountId
-      - amount
-      - type
-    properties:
-      accountId:
-        type: string
-        description: Unique ID of the account
-      amount:
-        type: number
-        description: Transaction amount
-      type:
-        type: string
-        enum:
-          - debit
-          - credit
-      description:
-        type: string
-        description: Transaction description
-  TransactionUpdate:
-    type: object
-    properties:
-      amount:
-        type: number
-        description: Updated transaction amount
-      description:
-        type: string
-        description: Updated transaction description
   TransactionCategoryUpdate:
     type: object
     required:
@@ -277,18 +180,24 @@ definitions:
       id:
         type: string
         description: Unique ID of the transaction
-      accountId:
+      date:
         type: string
-        description: Unique ID of the account
-      amount:
-        type: number
-        description: Transaction amount
-      type:
-        type: string
-        description: Transaction type
+        format: date
+        description: Date of the transaction
       description:
         type: string
-        description: Transaction description
+        description: Description of the transaction
+      amount:
+        type: number
+        format: double
+        description: Amount spent in the transaction
+      availableBalance:
+        type: number
+        format: double
+        description: Available balance after the transaction was made
+      type:
+        type: string
+        description: Type of transaction (e.g., debit, credit)
   ApiResponse:
     type: object
     properties:

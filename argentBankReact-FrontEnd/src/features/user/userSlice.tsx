@@ -119,13 +119,12 @@ const userSlice = createSlice({
           state.token = action.payload.token;
         }
       )
-      .addCase(
-        loginUser.rejected,
-        (state, action: PayloadAction<SerializedError>) => {
-          state.status = "failed";
-          state.error = action.payload.message || "An unknown error occurred";
-        }
-      )
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        // Use type assertion to inform TypeScript about the payload's structure
+        const errorMessage = (action.payload as { message?: string })?.message;
+        state.error = errorMessage !== undefined ? errorMessage : null;
+      })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.user = action.payload;
       })

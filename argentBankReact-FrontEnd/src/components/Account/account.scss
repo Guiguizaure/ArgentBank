@@ -50,10 +50,7 @@
                 transition-duration: 0.4s; /* Smooth transition for hover effect */
                 box-shadow: 2px 2px #999; /* Shadow on the right and bottom */
                 user-select: none; /* Prevents text selection */
-                
-                // &:hover {
-                //     background-color: #5cbf2a; /* Lighter green on hover */
-                //   }
+
                   
                 &:active {
                 box-shadow: inset 1px 1px 2px #bbb, inset -1px -1px 2px #fff; /* Inset shadow for pressed effect */
