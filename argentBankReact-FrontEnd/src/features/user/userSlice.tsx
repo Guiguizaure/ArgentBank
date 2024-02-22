@@ -1,10 +1,5 @@
 // userSlice.tsx
-import {
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  SerializedError,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { apiService } from "./apiServices";
 import { setToken, removeToken } from "../../utility/token";
