@@ -10,24 +10,13 @@ schemes:
   - http
 paths:
   /transactions/monthly:
-    post:
+    get:
       security:
         - Bearer: []
       tags:
         - Transactions Module
       summary: View Monthly Transactions
-      description: API for securely viewing all transactions for the current month, grouped by account. Uses a POST method for enhanced security.
-      parameters:
-        - in: body
-          name: body
-          description: Request parameters for viewing monthly transactions
-          required: true
-          schema:
-            type: object
-            properties:
-              accountId:
-                type: string
-                description: Unique ID of the account to filter transactions
+      description: API for viewing all transactions for the current month, grouped by account.
       produces:
         - application/json
       responses:
@@ -41,30 +30,21 @@ paths:
           description: Unauthorized Access
         "500":
           description: Internal Server Error
+
   /transaction/{transactionId}:
-    post:
+    get:
       security:
         - Bearer: []
       tags:
         - Transactions Module
       summary: View Transaction Details
-      description: API for securely viewing the details of a specific transaction using a POST method.
+      description: API for viewing the details of a specific transaction.
       parameters:
         - in: path
           name: transactionId
           required: true
           type: string
           description: Unique ID of the transaction
-        - in: body
-          name: body
-          description: Request parameters for viewing a transaction detail
-          required: true
-          schema:
-            type: object
-            properties:
-              detailLevel:
-                type: string
-                description: Level of detail requested for the transaction
       produces:
         - application/json
       responses:
@@ -80,7 +60,71 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
+
   /transaction/{transactionId}/category:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Get Transaction Category
+      description: API for getting the category of a specific transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+      responses:
+        "200":
+          description: Transaction category retrieved successfully
+          schema:
+            type: object
+            properties:
+              category:
+                type: string
+                description: Category of the transaction
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Add a new category to a transaction
+      description: API for adding a new category to a transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              category:
+                type: string
+                description: New category to be added
+      responses:
+        "201":
+          description: New category added to transaction successfully
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
     put:
       security:
         - Bearer: []
@@ -98,14 +142,14 @@ paths:
           name: body
           required: true
           schema:
-            $ref: "#/definitions/TransactionCategoryUpdate"
-      produces:
-        - application/json
+            type: object
+            properties:
+              category:
+                type: string
+                description: Updated category for the transaction
       responses:
         "200":
           description: Transaction category updated successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Request
         "401":
@@ -114,14 +158,69 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
-  /transaction/{transactionId}/note:
-    put:
+    delete:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Update Transaction Note
-      description: API for adding or updating a note to a transaction.
+      summary: Delete Transaction Category
+      description: API for deleting the category of a transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+      responses:
+        "200":
+          description: Transaction category deleted successfully
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
+
+  /transaction/{transactionId}/note:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Get Transaction Note
+      description: API for getting the note of a specific transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+      responses:
+        "200":
+          description: Transaction note retrieved successfully
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+                description: Note of the transaction
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Add a new note to a transaction
+      description: API for adding a new note to a transaction.
       parameters:
         - in: path
           name: transactionId
@@ -132,14 +231,14 @@ paths:
           name: body
           required: true
           schema:
-            $ref: "#/definitions/TransactionNoteUpdate"
-      produces:
-        - application/json
+            type: object
+            properties:
+              note:
+                type: string
+                description: New note to be added
       responses:
-        "200":
-          description: Transaction note updated successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
+        "201":
+          description: New note added to transaction successfully
         "400":
           description: Invalid Request
         "401":
@@ -148,28 +247,71 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Update Transaction Note
+      description: API for updating a note of a transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+                description: Updated note for the transaction
+      responses:
+        "200":
+          description: Transaction note updated successfully
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Delete Transaction Note
+      description: API for deleting a note from a transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: Unique ID of the transaction
+      responses:
+        "200":
+          description: Transaction note deleted successfully
+        "400":
+          description: Invalid Request
+        "401":
+          description: Unauthorized Access
+        "404":
+          description: Transaction Not Found
+        "500":
+          description: Internal Server Error
+
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+
 definitions:
-  TransactionCategoryUpdate:
-    type: object
-    required:
-      - category
-    properties:
-      category:
-        type: string
-        description: New category for the transaction
-  TransactionNoteUpdate:
-    type: object
-    required:
-      - note
-    properties:
-      note:
-        type: string
-        description: Note to be added or updated for the transaction
   TransactionsList:
     type: array
     items:
@@ -198,6 +340,22 @@ definitions:
       type:
         type: string
         description: Type of transaction (e.g., debit, credit)
+  TransactionCategoryUpdate:
+    type: object
+    required:
+      - category
+    properties:
+      category:
+        type: string
+        description: New or updated category for the transaction
+  TransactionNoteUpdate:
+    type: object
+    required:
+      - note
+    properties:
+      note:
+        type: string
+        description: New or updated note for the transaction
   ApiResponse:
     type: object
     properties:

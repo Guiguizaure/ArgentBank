@@ -17,17 +17,17 @@ interface UserState {
   error: string | null;
 }
 
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
 const initialState: UserState = {
   user: null,
   token: null,
   status: "idle",
   error: null,
 };
-
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
 
 export const loginUser = createAsyncThunk(
   "user/login",

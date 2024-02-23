@@ -28,7 +28,6 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!email || !password) {
-      // Update this to handle empty input fields
       console.error("Please enter both email and password");
       return;
     }
@@ -67,7 +66,7 @@ const LoginPage: React.FC = () => {
             Sign In
           </button>
         </form>
-        {/* Display error message if login failed */}
+        {/* error message if login failed */}
         {userStatus === "failed" && (
           <p className="error-message">{userError}</p>
         )}

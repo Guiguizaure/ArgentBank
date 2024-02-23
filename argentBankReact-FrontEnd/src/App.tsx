@@ -8,6 +8,7 @@ import { getToken } from "./utility/token";
 import { fetchUserProfile } from "./features/user/userSlice";
 import { AppDispatch, RootState } from "./app/store";
 import { setTokenInState } from "./features/user/userSlice";
+import { useState } from "react";
 // Import necessary actions
 import Header from "./components/Header/header";
 import Footer from "./components/Footer/footer";
@@ -20,15 +21,23 @@ import "./scss/base/_reset.scss";
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector((state: RootState) => !!state.user.token);
+  const [authInitialized, setAuthInitialized] = useState(false);
 
   useEffect(() => {
     const storedToken = getToken();
-    console.log("Stored token:", storedToken);
     if (storedToken) {
       dispatch(setTokenInState(storedToken));
-      dispatch(fetchUserProfile());
+      dispatch(fetchUserProfile()).finally(() => {
+        setAuthInitialized(true);
+      });
+    } else {
+      setAuthInitialized(true);
     }
   }, [dispatch]);
+
+  if (!authInitialized) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
