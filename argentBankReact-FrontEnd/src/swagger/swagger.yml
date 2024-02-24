@@ -61,29 +61,34 @@ paths:
         "500":
           description: Internal Server Error
 
-  /transaction/{transactionId}/category:
+  /transaction/{transactionId}/info:
     get:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Get Transaction Category
-      description: API for getting the category of a specific transaction.
+      summary: Get Transaction Category and Note
+      description: API for getting the category and note of a specific transaction.
       parameters:
         - in: path
           name: transactionId
           required: true
           type: string
           description: Unique ID of the transaction
+      produces:
+        - application/json
       responses:
         "200":
-          description: Transaction category retrieved successfully
+          description: Transaction category and note retrieved successfully
           schema:
             type: object
             properties:
               category:
                 type: string
                 description: Category of the transaction
+              note:
+                type: string
+                description: Note of the transaction
         "400":
           description: Invalid Request
         "401":
@@ -92,13 +97,14 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
+
     post:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Add a new category to a transaction
-      description: API for adding a new category to a transaction.
+      summary: Create Transaction Category and Note
+      description: API for creating the category and note for a transaction.
       parameters:
         - in: path
           name: transactionId
@@ -113,10 +119,15 @@ paths:
             properties:
               category:
                 type: string
-                description: New category to be added
+                description: Category to be added to the transaction
+              note:
+                type: string
+                description: Note to be added to the transaction
+      produces:
+        - application/json
       responses:
         "201":
-          description: New category added to transaction successfully
+          description: Transaction category and note created successfully
         "400":
           description: Invalid Request
         "401":
@@ -125,13 +136,14 @@ paths:
           description: Transaction Not Found
         "500":
           description: Internal Server Error
+
     put:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Update Transaction Category
-      description: API for updating the category of a transaction.
+      summary: Update Transaction Category and Note
+      description: API for updating the category and note of a transaction.
       parameters:
         - in: path
           name: transactionId
@@ -147,33 +159,14 @@ paths:
               category:
                 type: string
                 description: Updated category for the transaction
+              note:
+                type: string
+                description: Updated note for the transaction
+      produces:
+        - application/json
       responses:
-        "200":
-          description: Transaction category updated successfully
-        "400":
-          description: Invalid Request
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
-    delete:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Delete Transaction Category
-      description: API for deleting the category of a transaction.
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-      responses:
-        "200":
-          description: Transaction category deleted successfully
+        "204":
+          description: Transaction category and note updated successfully
         "400":
           description: Invalid Request
         "401":
@@ -183,119 +176,24 @@ paths:
         "500":
           description: Internal Server Error
 
-  /transaction/{transactionId}/note:
-    get:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Get Transaction Note
-      description: API for getting the note of a specific transaction.
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-      responses:
-        "200":
-          description: Transaction note retrieved successfully
-          schema:
-            type: object
-            properties:
-              note:
-                type: string
-                description: Note of the transaction
-        "400":
-          description: Invalid Request
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Add a new note to a transaction
-      description: API for adding a new note to a transaction.
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              note:
-                type: string
-                description: New note to be added
-      responses:
-        "201":
-          description: New note added to transaction successfully
-        "400":
-          description: Invalid Request
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Update Transaction Note
-      description: API for updating a note of a transaction.
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: Unique ID of the transaction
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              note:
-                type: string
-                description: Updated note for the transaction
-      responses:
-        "200":
-          description: Transaction note updated successfully
-        "400":
-          description: Invalid Request
-        "401":
-          description: Unauthorized Access
-        "404":
-          description: Transaction Not Found
-        "500":
-          description: Internal Server Error
     delete:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Delete Transaction Note
-      description: API for deleting a note from a transaction.
+      summary: Delete Transaction Category and Note
+      description: API for deleting the category and note of a transaction.
       parameters:
         - in: path
           name: transactionId
           required: true
           type: string
           description: Unique ID of the transaction
+      produces:
+        - application/json
       responses:
-        "200":
-          description: Transaction note deleted successfully
+        "204":
+          description: Transaction category and note deleted successfully
         "400":
           description: Invalid Request
         "401":
@@ -340,33 +238,9 @@ definitions:
       type:
         type: string
         description: Type of transaction (e.g., debit, credit)
-  TransactionCategoryUpdate:
-    type: object
-    required:
-      - category
-    properties:
       category:
         type: string
-        description: New or updated category for the transaction
-  TransactionNoteUpdate:
-    type: object
-    required:
-      - note
-    properties:
+        description: Category of the transaction
       note:
         type: string
-        description: New or updated note for the transaction
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          message:
-            type: string
+        description: Note of the transaction
